@@ -1,0 +1,88 @@
+﻿<Page
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
+    x:Class="Drone.MainPage"
+    mc:Ignorable="d">
+
+    <Grid x:Name="LayoutRoot" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <Image x:Name="captureFrame" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Image x:Name="captureImage" Width="135" Height="100"/>
+        <Maps:MapControl x:Name="map" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="200" Height="130" Margin="10,0,0,10"/>
+
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
+            <Image x:Name="gamepadStatus" Opacity="0.2" Source="Assets/Icons/controller.png" Height="50" Width="50" Margin="5"/>
+            <Grid Margin="5">
+                <Image x:Name="gpsStatus" Opacity="0.2"  Height="50" Width="50" Source="Assets/Icons/gps.png"/>
+                <TextBlock x:Name="numSatLabel" Text="0" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0"/>
+            </Grid>
+            <ToggleButton x:Name="armToggle" Content="Arm" Checked="arm_Checked" Unchecked="arm_Unchecked" Margin="5"/>
+            <ToggleButton x:Name="horizonToggle"  Content="Horizon" Checked="horizonToggle_Checked" Unchecked="horizonToggle_Unchecked" Margin="5"/>
+            <Grid Margin="5">
+                <Image x:Name="serviceStatus" Opacity="0.2"  Height="50" Width="50" Source="Assets/Icons/service.png"/>
+                <TextBlock x:Name="latencyLabel" Text="0" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0"/>
+            </Grid>
+            <Image x:Name="droneStatus" Opacity="0.2" Source="Assets/Icons/drone.png" Tapped="droneStatus_Tapped" Height="50" Width="50" Margin="5">
+                <FlyoutBase.AttachedFlyout>
+                    <Flyout x:Name="WiFiFlyout">
+                        <StackPanel>
+                            <TextBlock Text="1. Connect to RPi using WiFi" />
+                            <TextBlock Text="2. Insert RPi device name and press connect" />
+                            <TextBox x:Name="deviceName" HorizontalAlignment="Center" Margin="0,10,0,0" TextWrapping="Wrap" PlaceholderText="192.168.137.1"/>
+                            <Button x:Name="connectButton" Content="Connect" HorizontalAlignment="Center" Margin="0,15,0,0" Click="connectButton_Click"/>
+                        </StackPanel>
+                    </Flyout>
+                </FlyoutBase.AttachedFlyout>
+            </Image>
+        </StackPanel>
+
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,80,0,0">
+            <Image x:Name="takeOffLandToggle" Width="50" Height="50" Source="Assets/Icons/takeoff.png" Margin="5" Tapped="takeOffLandToggle_Tapped"/>
+            <!--<Image x:Name="returnToHomeToggle" Width="50" Height="50" Source="Assets/Icons/rth.png" Margin="5" Tapped="returnToHomeToggle_Tapped"/>-->
+            <Ellipse x:Name="returnToHomeToggle" Width="50" Height="50" StrokeThickness="0" Stroke="#FF004DD4" Margin="5" Tapped="returnToHomeToggle_Tapped">
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="Assets/Icons/rth.png"/>
+                </Ellipse.Fill>
+            </Ellipse>
+            <!--<ToggleButton x:Name="takeOffLandToggle" Width="50" Height="50" Checked="takeOffLandToggle_Checked" Unchecked="takeOffLandToggle_Unchecked" Margin="5" />-->
+            <!--<ToggleButton x:Name="returnToHomeToggle" Width="50" Height="50" Checked="returnToHomeToggle_Checked" Unchecked="returnToHomeToggle_Unchecked" Margin="5" />-->
+            <Button x:Name="minusButton" Content="-"  Width="40" Click="minusButton_Click" Visibility="Collapsed"/>
+            <Button x:Name="plusButton" Content="+"  Width="40" Click="plusButton_Click" Visibility="Collapsed"/>
+            <ToggleButton x:Name="gpsHoldToggle" Content="Hold" Checked="gpsHoldToggle_Checked" Unchecked="gpsHoldToggle_Unchecked"/>
+            <!--<ToggleButton x:Name="autoToggle" Margin="10,0,0,0" Content="Auto" Checked="autoToggle_Checked" Unchecked="autoToggle_Unchecked"/>-->
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,55">
+            <TextBlock x:Name="battLoadLabel" Text="L:0"  FontSize="12" Margin="0,0,15,0"/>
+            <TextBlock x:Name="battVoltageLabel" Text="V:0" FontSize="12" Margin="0,0,15,0"/>
+            <TextBlock x:Name="battCurrentLabel" Text="A:0" FontSize="12" Margin="0,0,15,0"/>
+            <TextBlock x:Name="battPercentageLabel" Text="%:0" FontSize="12" Margin="0,0,15,0"/>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40">
+            <TextBlock x:Name="signalStrengthLabel" Text="SS:0" FontSize="12" Margin="0,0,15,0"/>
+            <TextBlock x:Name="takeOffRangeLabel" Text="TOR:0" FontSize="12" Margin="0,0,15,0"/>
+            <TextBlock x:Name="angxLabel" Text="ANGX: 0" FontSize="12" Margin="0,0,15,0"/>
+            <TextBlock x:Name="angyLabel" Text="ANGY: 0" FontSize="12" Margin="0,0,15,0"/>
+            <TextBlock x:Name="headLabel" Text="HEAD: 0" FontSize="12" Margin="0,0,15,0"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,25">
+            <TextBlock x:Name="rollLabel" Text="R:1500" Margin="0,0,15,0" FontSize="12"/>
+            <TextBlock x:Name="pitchLabel" Text="P:1500" Margin="0,0,15,0" FontSize="12"/>
+            <TextBlock x:Name="yawLabel" Text="Y:1500" Margin="0,0,15,0" FontSize="12"/>
+            <TextBlock x:Name="throttleLabel" Text="T:1000" Margin="0,0,15,0" FontSize="12"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,10">
+            <TextBlock x:Name="altitudeLabel" Text="A:0m"  FontSize="12" Margin="0,0,15,0"/>
+            <TextBlock x:Name="speedLabel" Text="S:0Km/h" FontSize="12" Margin="0,0,15,0"/>
+            <TextBlock x:Name="distanceLabel" Text="D:0cm" FontSize="12" Margin="0,0,15,0"/>
+        </StackPanel>
+
+        <TextBlock x:Name="autopilotLabel" Text="AUTOPILOT" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="65" Foreground="Orange" Visibility="Collapsed"/>
+    </Grid>
+</Page>
